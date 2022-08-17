@@ -3,7 +3,9 @@
 const SftpClient = require('ssh2-sftp-client');
 const logger = require('@condor-labs/logger');
 const { delay } = require('../../utils/utils');
+const slack = require('../../services/send-slack-notification');
 
+console.log('ENVS',process.env.SLACK_WEBHOOK_URL);
 
 let configFTP = null;
 const retryFunction = async (func, commandName = '', retries = 1) => {
@@ -23,14 +25,13 @@ const retryFunction = async (func, commandName = '', retries = 1) => {
       message: `It was not possible to run FTP ${commandName} command`,
       error,
     });
-    /*
+    
     slack.sendNotification(
-      `It was not possible to run FTP ${commandName} command`,
-      NOTIFICATION_COMMAND_FAILED,
-      NOFICATION_LEVEL.DANGER
+      `It was not possible to run FTP ${commandName} command`
+     
     );
     throw error;
-    */
+  
   }
 };
 
@@ -45,20 +46,13 @@ async function connectFTP() {
     port,
     user,
     password,
-    // algorithms: {
-    //   serverHostKey: ['ssh-dss'],
-    //   cipher: [
-    //     'aes128-ctr',
-    //     'aes192-ctr',
-    //     'aes256-ctr',
-    //     'aes128-gcm',
-    //     'aes128-gcm@openssh.com',
-    //     'aes256-gcm',
-    //     'aes256-gcm@openssh.com',
-    //     'aes256-cbc',
-    //   ],
-    // },
-  });
+    algorithms: {
+      "kex": [
+          "diffie-hellman-group14-sha1","diffie-hellman-group-exchange-sha1"
+      ]
+  }
+  }
+  );
 }
 
 const ftp = {

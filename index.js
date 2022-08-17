@@ -1,10 +1,11 @@
+require('dotenv').config();
 const sftp = require('./src/helpers/sftp/sftpHelper');
 
 const sftpConfig = {
-    host:'test.rebex.net',
+    host:'sftp.cebroker.com',
     port:'22',
-    user:'demo',
-    password:'password'
+    user:'test-user',
+    password:'Condor2020+'
 };
 
 
