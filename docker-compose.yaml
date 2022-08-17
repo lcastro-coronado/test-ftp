@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  api:
+    build: ./
+    container_name: sale-force-ftp
+    volumes:
+      - ./:/home/nodejs/app
+      - /home/nodejs/app/node_modules
+    networks:
+      - kuntur_network
+    ports:
+      - 3001:3001
+networks:
+  kuntur_network:
+    driver: bridge
