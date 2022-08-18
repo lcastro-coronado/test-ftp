@@ -17,14 +17,14 @@ const retryFunction = async (func, commandName = '', retries = 1) => {
         error,
       });
       await delay(Number(10));
-      // eslint-disable-next-line no-param-reassign
+      //eslint-disable-next-line no-param-reassign
       return await retryFunction(func, commandName, ++retries);
     }
     console.log('=>',error);
-    // logger.error({
-    //   message: `It was not possible to run FTP ${commandName} command`,
-    //   error,
-    // });
+    logger.error({
+      message: `It was not possible to run FTP ${commandName} command`,
+      error,
+    });
     
     slack.sendNotification(
       `It was not possible to run FTP ${commandName} command`
@@ -103,6 +103,12 @@ const ftp = {
     return await retryFunction(async () => {
       await this.connect();
       return await this.sftpClient.delete(path);
+    }, 'delete');
+  },
+  async uploadDir(src, dst) {
+    return await retryFunction(async () => {
+      await this.connect();
+      return await this.sftpClient.uploadDir(src, dst);
     }, 'delete');
   },
   async close() {

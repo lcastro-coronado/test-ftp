@@ -2,18 +2,23 @@ require('dotenv').config();
 const sftp = require('./src/helpers/sftp/sftpHelper');
 
 const sftpConfig = {
-    host:'sftp.cebroker.com',
-    port:'22',
-    user:'test-user',
-    password:'Condor2020+'
+host:process.env.SFTP_HOST,
+port:process.env.SFTP_POST,
+user:process.env.SFTP_USER,
+password:process.env.SFTP_PASSWORD
 };
+
+
+
+
+
 
 
 sftp.setConfig(sftpConfig);
 
 const init = async() =>{
 
-    console.log('list =>',await sftp.list('/'));
+console.log('put =>',await sftp.uploadDir('/Users/luiscastro/Desktop/screen','/licensees'));
 
 };
 
