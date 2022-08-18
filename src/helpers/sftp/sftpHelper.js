@@ -5,7 +5,6 @@ const logger = require('@condor-labs/logger');
 const { delay } = require('../../utils/utils');
 const slack = require('../../services/send-slack-notification');
 
-console.log('ENVS',process.env.SLACK_WEBHOOK_URL);
 
 let configFTP = null;
 const retryFunction = async (func, commandName = '', retries = 1) => {
@@ -21,10 +20,11 @@ const retryFunction = async (func, commandName = '', retries = 1) => {
       // eslint-disable-next-line no-param-reassign
       return await retryFunction(func, commandName, ++retries);
     }
-    logger.error({
-      message: `It was not possible to run FTP ${commandName} command`,
-      error,
-    });
+    console.log('=>',error);
+    // logger.error({
+    //   message: `It was not possible to run FTP ${commandName} command`,
+    //   error,
+    // });
     
     slack.sendNotification(
       `It was not possible to run FTP ${commandName} command`
@@ -47,10 +47,18 @@ async function connectFTP() {
     user,
     password,
     algorithms: {
-      "kex": [
-          "diffie-hellman-group14-sha1","diffie-hellman-group-exchange-sha1"
-      ]
-  }
+      serverHostKey: ['ssh-dss'],
+      cipher: [
+        'aes128-ctr',
+        'aes192-ctr',
+        'aes256-ctr',
+        'aes128-gcm',
+        'aes128-gcm@openssh.com',
+        'aes256-gcm',
+        'aes256-gcm@openssh.com',
+        'aes256-cbc',
+      ],
+    },
   }
   );
 }
